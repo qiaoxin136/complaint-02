@@ -1,7 +1,7 @@
-import { useEffect, useState, /* ChangeEvent,  */useRef } from "react";
-import type { Schema } from "../amplify/data/resource";
+import { useState, /* ChangeEvent,  */useRef } from "react";
+//import type { Schema } from "../amplify/data/resource";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { generateClient } from "aws-amplify/data";
+//import { generateClient } from "aws-amplify/data";
 import "@aws-amplify/ui-react/styles.css";
 //import { MapView } from "@aws-amplify/ui-react-geo";
 
@@ -11,7 +11,7 @@ import maplibregl from "maplibre-gl";
 
 import {
  // Input,
-  Flex,
+  //Flex,
   Button,
   //Table,
   //TableBody,
@@ -32,9 +32,9 @@ import "@aws-amplify/ui-react/styles.css";
 //import { uploadData } from "aws-amplify/storage";
 
 // Define the type for the file object
-type FileType = File | null;
+// type FileType = File | null;
 
-const client = generateClient<Schema>();
+// const client = generateClient<Schema>();
 
 // interface MapComponentProps {
 //   center: [number, number];
@@ -71,17 +71,17 @@ const client = generateClient<Schema>();
 }; */
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
+  //const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
   const { signOut } = useAuthenticator();
-  const [person, setPerson] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  //const [report, setReport] = useState("");
-  const [lat, setLat] = useState(0);
-  const [lng, setLng] = useState(0);
-  const [resolved, setResolved] = useState(false);
+  // const [person, setPerson] = useState("");
+  // const [description, setDescription] = useState("");
+  // const [date, setDate] = useState("");
+  // //const [report, setReport] = useState("");
+  // const [lat, setLat] = useState(0);
+  // const [lng, setLng] = useState(0);
+  // const [resolved, setResolved] = useState(false);
 
-  const [file, setFile] = useState<FileType>();
+  // const [file, setFile] = useState<FileType>();
   //const [tab, setTab] = useState("1");
 
   const mapRef = useRef<MapRef | null>(null);
@@ -116,44 +116,44 @@ function App() {
   //   setDate(e.target.value);
   // };
 
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
+  // useEffect(() => {
+  //   client.models.Todo.observeQuery().subscribe({
+  //     next: (data) => setTodos([...data.items]),
+  //   });
+  // }, []);
 
-  function createTodo() {
-    client.models.Todo.create({
-      person: person,
-      description: description,
-      date: date,
-      report: file?.name,
-      lat: lat,
-      long: lng,
-      status: resolved,
-    });
-    setPerson("");
-    setDescription("");
-    setDate("");
-    setLat(0);
-    setLng(0);
-    setResolved(false);
-  }
+  // function createTodo() {
+  //   client.models.Todo.create({
+  //     person: person,
+  //     description: description,
+  //     date: date,
+  //     report: file?.name,
+  //     lat: lat,
+  //     long: lng,
+  //     status: resolved,
+  //   });
+  //   setPerson("");
+  //   setDescription("");
+  //   setDate("");
+  //   setLat(0);
+  //   setLng(0);
+  //   setResolved(false);
+  // }
 
   // function deleteTodo(id: string) {
   //   client.models.Todo.delete({ id });
   // }
 
-  const openInNewTab = (url: any) => {
-    window.open(url, "_blank", "noreferrer");
-  };
+  // const openInNewTab = (url: any) => {
+  //   window.open(url, "_blank", "noreferrer");
+  // };
 
   return (
     <main>
       <h1>Washington Park Project Complaint Data</h1>
       <Divider orientation="horizontal" />
       <br />
-      <Flex>
+      {/* <Flex>
         <Button onClick={signOut} width={120}>
           Sign out
         </Button>
@@ -171,7 +171,7 @@ function App() {
         >
           Map
         </Button>
-      </Flex>
+      </Flex> */}
       <br />
  {/*      <Flex direction="row">
         <input
@@ -298,6 +298,9 @@ function App() {
       >
         <NavigationControl />
       </Map>
+      <Button onClick={signOut} width={120}>
+          Sign out
+        </Button>
     </main>
   );
 }
