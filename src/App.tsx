@@ -1,37 +1,47 @@
-import { useEffect, useState, ChangeEvent } from "react";
+import { useEffect, useState, /* ChangeEvent,  */useRef } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { generateClient } from "aws-amplify/data";
 import "@aws-amplify/ui-react/styles.css";
+//import { MapView } from "@aws-amplify/ui-react-geo";
+
+import "maplibre-gl/dist/maplibre-gl.css"; // Import maplibre-gl styles
+import Map, { NavigationControl, MapRef } from "react-map-gl";
+import maplibregl from "maplibre-gl";
 
 import {
-  Input,
+ // Input,
   Flex,
   Button,
-  Table,
-  TableBody,
-  TableHead,
-  TableCell,
-  TableRow,
-  ThemeProvider,
-  Theme,
+  //Table,
+  //TableBody,
+  //TableHead,
+  //TableCell,
+  //TableRow,
+  //ThemeProvider,
+  //Theme,
   Divider,
-  ScrollView,
-  Tabs,
-  ToggleButton,
+  //ScrollView,
+  //Tabs,
+  //ToggleButton,
   // TextField,
 } from "@aws-amplify/ui-react";
 
 import "@aws-amplify/ui-react/styles.css";
 
-import { uploadData } from "aws-amplify/storage";
+//import { uploadData } from "aws-amplify/storage";
 
 // Define the type for the file object
 type FileType = File | null;
 
 const client = generateClient<Schema>();
 
-const theme: Theme = {
+// interface MapComponentProps {
+//   center: [number, number];
+//   zoom: number;
+// }
+
+/* const theme: Theme = {
   name: "table-theme",
   tokens: {
     components: {
@@ -58,7 +68,7 @@ const theme: Theme = {
       },
     },
   },
-};
+}; */
 
 function App() {
   const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
@@ -72,32 +82,39 @@ function App() {
   const [resolved, setResolved] = useState(false);
 
   const [file, setFile] = useState<FileType>();
-  const [tab, setTab] = useState("1");
+  //const [tab, setTab] = useState("1");
 
-  const handleChange = (event: any) => {
-    setFile(event.target.files?.[0]);
-  };
+  const mapRef = useRef<MapRef | null>(null);
+  const [viewState, setViewState] = useState({
+    longitude: -80.15,
+    latitude: 25.9998,
+    zoom: 8,
+  });
 
-  const handleClick = () => {
-    if (!file) {
-      return;
-    }
-    uploadData({
-      path: `picture-submissions/${file.name}`,
-      data: file,
-    });
-    console.log(file);
-  };
+  // const handleChange = (event: any) => {
+  //   setFile(event.target.files?.[0]);
+  // };
 
-  const handlePerson = (e: ChangeEvent<HTMLInputElement>) => {
-    setPerson(e.target.value);
-  };
-  const handleDescription = (e: ChangeEvent<HTMLInputElement>) => {
-    setDescription(e.target.value);
-  };
-  const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value);
-  };
+  // const handleClick = () => {
+  //   if (!file) {
+  //     return;
+  //   }
+  //   uploadData({
+  //     path: `picture-submissions/${file.name}`,
+  //     data: file,
+  //   });
+  //   console.log(file);
+  // };
+
+  // const handlePerson = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setPerson(e.target.value);
+  // };
+  // const handleDescription = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setDescription(e.target.value);
+  // };
+  // const handleDate = (e: ChangeEvent<HTMLInputElement>) => {
+  //   setDate(e.target.value);
+  // };
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -123,9 +140,9 @@ function App() {
     setResolved(false);
   }
 
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id });
-  }
+  // function deleteTodo(id: string) {
+  //   client.models.Todo.delete({ id });
+  // }
 
   const openInNewTab = (url: any) => {
     window.open(url, "_blank", "noreferrer");
@@ -156,7 +173,7 @@ function App() {
         </Button>
       </Flex>
       <br />
-      <Flex direction="row">
+ {/*      <Flex direction="row">
         <input
           type="text"
           value={person}
@@ -189,8 +206,8 @@ function App() {
         >
           Resolve (click)
         </ToggleButton>
-      </Flex>
-      <Tabs
+      </Flex> */}
+      {/*   <Tabs
         value={tab}
         onValueChange={(tab) => setTab(tab)}
         items={[
@@ -211,12 +228,12 @@ function App() {
                   // maxWidth="100%"
                   padding="1rem"
                   // width="100%"
-                  width="2400px"
-                  height={"2400px"}
-                  maxHeight={"2400px"}
-                  maxWidth="2400px"
+                  // width="2400px"
+                  // height={"2400px"}
+                  // maxHeight={"2400px"}
+                  // maxWidth="2400px"
                 >
-                    <ThemeProvider theme={theme} colorMode="light">
+                  <ThemeProvider theme={theme} colorMode="light">
                     <Table caption="" highlightOnHover={false}>
                       <TableHead>
                         <TableRow>
@@ -256,12 +273,31 @@ function App() {
             value: "2",
             content: (
               <>
+                <Map
+                  ref={mapRef}
+                  mapLib={maplibregl}
+                  mapStyle="https://demotiles.maplibre.org/style.json" // Use any MapLibre-compatible style
+                  {...viewState}
+                  onMove={(evt) => setViewState(evt.viewState)}
+                  style={{ width: "100%", height: "1200px" }}
+                >
+                  <NavigationControl />
+                </Map>
               </>
             ),
           },
         ]}
-      />
- 
+      /> */}
+      <Map
+        ref={mapRef}
+        mapLib={maplibregl}
+        mapStyle="https://demotiles.maplibre.org/style.json" // Use any MapLibre-compatible style
+        {...viewState}
+        onMove={(evt) => setViewState(evt.viewState)}
+        style={{ width: "100%", height: "800px" }}
+      >
+        <NavigationControl />
+      </Map>
     </main>
   );
 }
