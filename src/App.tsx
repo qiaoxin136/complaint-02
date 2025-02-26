@@ -291,7 +291,7 @@ function App() {
       <Map
         ref={mapRef}
         mapLib={maplibregl}
-        mapStyle="https://demotiles.maplibre.org/style.json" // Use any MapLibre-compatible style
+        mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json" // Use any MapLibre-compatible style
         {...viewState}
         onMove={(evt) => setViewState(evt.viewState)}
         style={{ width: "100%", height: "800px" }}
