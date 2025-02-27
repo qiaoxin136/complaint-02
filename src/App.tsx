@@ -1,7 +1,7 @@
 import { useState, /* ChangeEvent,  */ useRef, useCallback } from "react";
 //import type { Schema } from "../amplify/data/resource";
 import { useAuthenticator } from "@aws-amplify/ui-react";
-import { DeckProps } from "@deck.gl/core";
+import { MapboxOverlayProps } from "@deck.gl/mapbox/typed";
 //import { generateClient } from "aws-amplify/data";
 import "@aws-amplify/ui-react/styles.css";
 //import { MapView } from "@aws-amplify/ui-react-geo";
@@ -9,9 +9,10 @@ import "@aws-amplify/ui-react/styles.css";
 import "maplibre-gl/dist/maplibre-gl.css"; // Import maplibre-gl styles
 import { NavigationControl, MapRef } from "react-map-gl";
 
-import { Map, useControl } from "react-map-gl";
-import { MapboxOverlay } from "@deck.gl/mapbox";
+import { Map, MapProps, useControl } from "react-map-gl";
 import maplibregl from "maplibre-gl";
+
+import { MapboxOverlay } from "@deck.gl/mapbox/typed";
 
 import {
   // Input,
@@ -33,7 +34,7 @@ import {
 
 import "@aws-amplify/ui-react/styles.css";
 
-import { GeoJsonLayer } from "deck.gl";
+import { GeoJsonLayer } from "@deck.gl/layers/typed";
 
 //import { ScatterplotLayer } from "@deck.gl/layers";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -43,7 +44,7 @@ const AIR_PORTS =
 
 const MAP_STYLE =
   "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
-function DeckGLOverlay(props: DeckProps) {
+function DeckGLOverlay(props: MapboxOverlayProps) {
   const overlay = useControl<MapboxOverlay>(() => new MapboxOverlay(props));
   overlay.setProps(props);
   return null;
@@ -64,7 +65,7 @@ function App() {
       filled: true,
       pointRadiusMinPixels: 2,
       pointRadiusScale: 20,
-      getPointRadius: (f) => 11 - f.properties.scalerank,
+      getPointRadius: 8,
       getFillColor: [200, 0, 80, 180],
       // Interactive props
       pickable: true,
@@ -76,7 +77,10 @@ function App() {
 
   const handleClick = useCallback((info: any /* event: any */) => {
     if (info.object) {
-      console.log("Clicked object:", Object.entries(info.object.geometry)[1][1]);
+      console.log(
+        "Clicked object:",
+        Object.entries(info.object.geometry)[1][1]
+      );
       // setSelected(info.object);
     } else {
       //console.log('Clicked on the map at:', info.coordinate);
@@ -93,11 +97,13 @@ function App() {
   }, []);
 
   const mapRef = useRef<MapRef | null>(null);
-  const [viewState, setViewState] = useState({
-    longitude: -80.15,
-    latitude: 25.9998,
-    zoom: 17,
-  });
+  const [viewState, setViewState] = useState<MapProps["viewState"]>({
+    longitude: -74,
+    latitude: 40.75,
+    zoom: 11,
+    pitch: 0,
+    bearing: 0
+  } as any);
 
   return (
     <main>
@@ -112,18 +118,18 @@ function App() {
         mapLib={maplibregl}
         mapStyle={MAP_STYLE} // Use any MapLibre-compatible style
         {...viewState}
-        onMove={(evt) => setViewState(evt.viewState)}
+        onMove={({ viewState }) => setViewState(viewState as any)}
         style={{ width: "100%", height: "800px" }}
       >
         <DeckGLOverlay
           layers={layers}
           // interleaved
-          controller={true}
+          //controller={true}
           onClick={handleClick}
           onHover={handleHover}
         />
         <NavigationControl position="top-left" />
-         {/* {selected && (
+        {/* {selected && (
           <Popup
             longitude={Object.entries(selected)[1][1]}
             latitude={40}
